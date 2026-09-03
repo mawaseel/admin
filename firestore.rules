@@ -17,23 +17,24 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if signedIn() && (request.auth.uid == userId || isAdmin());
 
-      // الشريك ينشئ حسابه بنفسه فقط، بدون صلاحيات إدارة.
+      // الشريك ينشئ مستنده بنفسه فقط. إنشاء الأدمن صار من Backend فقط.
       allow create: if signedIn() && request.auth.uid == userId
         && request.resource.data.get('role', 'partner') == 'partner'
         && request.resource.data.get('isAdmin', false) == false;
 
-      // أدمن عنده manageAdmins يقدر ينشئ مستند حساب أدمن جديد بعد إنشاء Auth account.
-      allow create: if hasPermission('manageAdmins')
-        && request.resource.data.get('role', '') == 'admin';
-
-      // الشريك يعدل بياناته، لكن ما بقدر يرفع نفسه لأدمن.
+      // الشريك يعدل بياناته بدون ما يرفع نفسه لأدمن.
       allow update: if signedIn() && request.auth.uid == userId
         && request.resource.data.get('role', 'partner') == resource.data.get('role', 'partner')
         && request.resource.data.get('isAdmin', false) == resource.data.get('isAdmin', false);
 
-      // إدارة حسابات الأدمنز وصلاحياتهم.
-      allow update, delete: if hasPermission('manageAdmins')
+      // صاحب صلاحية إدارة الأدمنز يقدر يعدل/يعطل الحسابات، لكن ما يقدر يلمس PRIMARY.
+      allow update: if hasPermission('manageAdmins')
         && (isPrimaryAdmin() || resource.data.get('isPrimaryAdmin', false) != true);
+
+      // الحذف من جهة العميل محصور بالحساب الأساسي فقط.
+      // الحذف الحقيقي من Authentication + Firestore يتم من Backend باستخدام Admin SDK.
+      allow delete: if isPrimaryAdmin()
+        && resource.data.get('isPrimaryAdmin', false) != true;
     }
 
     match /orders/{orderId} {
