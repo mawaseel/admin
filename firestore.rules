@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function userDoc() { return get(/databases/$(database)/documents/users/$(request.auth.uid)); }
+    function isAdmin() {
+      return signedIn() && userDoc().data.get('active', true) != false &&
+        (userDoc().data.get('role', '') == 'admin' || userDoc().data.get('isAdmin', false) == true);
+    }
+    function isPrimaryAdmin() {
+      return isAdmin() && request.auth.token.email == 'mw.gl3tvl71en6c@mawaseel.ps';
+    }
+    function hasPermission(name) {
+      return isPrimaryAdmin() || (isAdmin() && userDoc().data.get('permissions', {}).get(name, false) == true);
+    }
+
+    match /users/{userId} {
+      allow read: if signedIn() && (request.auth.uid == userId || isAdmin());
+
+      // الشريك ينشئ حسابه بنفسه فقط، بدون صلاحيات إدارة.
+      allow create: if signedIn() && request.auth.uid == userId
+        && request.resource.data.get('role', 'partner') == 'partner'
+        && request.resource.data.get('isAdmin', false) == false;
+
+      // أدمن عنده manageAdmins يقدر ينشئ مستند حساب أدمن جديد بعد إنشاء Auth account.
+      allow create: if hasPermission('manageAdmins')
+        && request.resource.data.get('role', '') == 'admin';
+
+      // الشريك يعدل بياناته، لكن ما بقدر يرفع نفسه لأدمن.
+      allow update: if signedIn() && request.auth.uid == userId
+        && request.resource.data.get('role', 'partner') == resource.data.get('role', 'partner')
+        && request.resource.data.get('isAdmin', false) == resource.data.get('isAdmin', false);
+
+      // إدارة حسابات الأدمنز وصلاحياتهم.
+      allow update, delete: if hasPermission('manageAdmins')
+        && (isPrimaryAdmin() || resource.data.get('isPrimaryAdmin', false) != true);
+    }
+
+    match /orders/{orderId} {
+      allow read: if signedIn() && (isAdmin() || resource.data.partnerId == request.auth.uid);
+      allow create: if hasPermission('ordersCreate');
+      allow update: if hasPermission('ordersEdit');
+      allow delete: if hasPermission('ordersDelete');
+    }
+
+    match /{document=**} { allow read, write: if false; }
+  }
+}

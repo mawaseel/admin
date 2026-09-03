@@ -1,0 +1,33 @@
+MAWASEEL PRIMARY ADMIN ACCOUNT
+==============================
+
+اسم المستخدم:
+mw_gL3tVL71En6C
+
+كلمة السر:
+3zfqPvdNZ7sSqx9%gm_V0m_9
+
+الإيميل الداخلي المستخدم مع Firebase:
+mw.gl3tvl71en6c@mawaseel.ps
+
+مهم جدًا:
+كلمة السر ليست مخزنة داخل ملفات HTML. هذا مقصود للحماية.
+صفحة login.html تحول اسم المستخدم إلى الإيميل الداخلي ثم Firebase يتحقق من كلمة السر.
+
+تجهيز الحساب لأول مرة في Firebase:
+1) افتح Firebase Console > Authentication > Users > Add user.
+2) Email: mw.gl3tvl71en6c@mawaseel.ps
+3) Password: 3zfqPvdNZ7sSqx9%gm_V0m_9
+4) بعد إنشاء المستخدم، انسخ UID الخاص به.
+5) افتح Firestore Database > collection اسمها users.
+6) أنشئ document جديد واجعل Document ID هو نفس UID.
+7) أضف الحقل:
+   role = admin
+8) ارفع firestore.rules الموجودة مع المشروع.
+
+بعدها دخول الإدارة يكون فقط بالبيانات أعلاه من واجهة admin.mawaseel.ps.
+
+ملاحظة أمنية:
+- لا تشارك ملف ADMIN_ACCOUNT_SETUP.txt على الاستضافة العامة.
+- لا ترفعه داخل مجلد الموقع على السيرفر. احتفظ به عندك فقط.
+- من الأفضل تغيير كلمة السر لاحقًا من Firebase Console إذا شاركتها مع أي شخص.
