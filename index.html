@@ -49,7 +49,7 @@ import {getFirestore,doc,getDoc,setDoc,collection,getDocs,addDoc,updateDoc,delet
 const firebaseConfig={apiKey:"AIzaSyBC4KevTkZ_myJZ5kG7LXqAALUVSdLsnHE",authDomain:"mawaseel.firebaseapp.com",projectId:"mawaseel",storageBucket:"mawaseel.firebasestorage.app",messagingSenderId:"877553024815",appId:"1:877553024815:web:bdd1a3c4b352e915e06bda",measurementId:"G-7X5GBYVJ9M"};
 const PRIMARY_ADMIN_EMAIL='mw.gl3tvl71en6c@mawaseel.ps';
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);let currentAdmin=null,currentAdminData={},partners=[],admins=[],orders=[],filter='all';
-const API_BASE=(location.hostname==='127.0.0.1'||location.hostname==='localhost')?'http://127.0.0.1:8787':'https://api.mawaseel.ps';
+const API_BASE='https://mawaseel-backend.onrender.com';
 async function apiFetch(path,options={}){if(!currentAdmin)throw new Error('not_authenticated');const token=await currentAdmin.getIdToken();const headers={'Content-Type':'application/json','Authorization':`Bearer ${token}`,...(options.headers||{})};const res=await fetch(`${API_BASE}${path}`,{...options,headers});const data=await res.json().catch(()=>({}));if(!res.ok){const err=new Error(data.error||'api_error');err.code=data.error;err.status=res.status;throw err}return data}
 const meta={new:'جديد',approved:'معتمد',arrived:'وصلت',shipping:'قيد التوصيل',complete:'مكتمل',rejected:'مرفوض',cancelled:'ملغي'};const statusOptions=Object.entries(meta).map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
 function setPortalCookie(role){document.cookie=`mawaseel_portal=${role}; Domain=.mawaseel.ps; Path=/; Max-Age=2592000; SameSite=Lax; Secure`;}function clearPortalCookie(){document.cookie=`mawaseel_portal=; Domain=.mawaseel.ps; Path=/; Max-Age=0; SameSite=Lax; Secure`;}
