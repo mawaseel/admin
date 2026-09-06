@@ -1,0 +1,19 @@
+Mawaseel Admin V5 - Grouped Navigation
+
+Main bottom navigation:
+- الرئيسية
+- الطلبات
+- المسوقون
+- الفريق
+
+Inside الطلبات:
+- كل الطلبات
+- أول طلب
+- استثمار
+
+Inside المسوقون:
+- قائمة المسوقين
+- التوثيق
+- التجربة
+
+No Firebase/backend/data logic was changed in this update. This version only reorganizes the admin navigation and responsive UI.
