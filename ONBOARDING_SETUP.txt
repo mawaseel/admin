@@ -1,0 +1,17 @@
+MAWASEEL ONBOARDING V3 — SETUP
+
+1) ارفع ملفات main إلى مستودع home. تمت إضافة verify.html و trial.html.
+2) ارفع dashboard إلى مستودع dashboard.
+3) ارفع ملفات admin إلى مستودع admin.
+4) استبدل Firestore Rules بمحتوى admin/firestore.rules واضغط Publish.
+5) ارفع backend/server.js و package.json... إلى مستودع Backend واترك Render يعمل Deploy.
+6) تأكد أن Render Environment يحتوي ALLOWED_ORIGINS وفيه https://mawaseel.github.io.
+7) لا تغيّر FIREBASE_SERVICE_ACCOUNT_JSON ولا ترفعه إلى GitHub.
+
+Workflow:
+- تسجيل حساب + بيانات واتساب -> verify.html
+- الضغط على وثق حسابك يسجل verificationRequests/{uid} ويفتح WhatsApp برسالة «وثقني».
+- الأدمن > التوثيق > موافقة: يبدأ يومان تلقائيا.
+- التجربة: طلبان SHEIN، عمولة صفر.
+- الأدمن > التجربة > اعتماد كمسوق: يفتح مركز الشريك ولوحة التحكم.
+- الإدارة تقدر تعتمد المسوق بأي وقت بعد التوثيق حتى لو 0/2 أو انتهت المدة.

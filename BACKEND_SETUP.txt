@@ -1,0 +1,37 @@
+MAWASEEL ADMIN BACKEND - إعداد سريع
+====================================
+
+النسخة هذه تضيف Backend فعلي لإنشاء وحذف حسابات الأدمن.
+
+1) موقع الأدمن:
+   ارفع محتويات مجلد admin-site إلى admin.mawaseel.ps
+
+2) Backend:
+   ارفع مجلد backend على Render / Railway / Cloud Run.
+   الدومين المقترح: api.mawaseel.ps
+
+3) Service Account:
+   من Firebase/Google Cloud > Project Settings > Service Accounts
+   أنشئ Private Key جديد.
+   خذ محتوى JSON وحطه كمتغير بيئة باسم:
+   FIREBASE_SERVICE_ACCOUNT_JSON
+
+   مهم: لا ترفع ملف Service Account داخل الموقع ولا GitHub.
+
+4) متغيرات البيئة:
+   PRIMARY_ADMIN_EMAIL=mw.gl3tvl71en6c@mawaseel.ps
+   ALLOWED_ORIGINS=https://admin.mawaseel.ps
+
+5) محليًا:
+   موقع الأدمن يتوقع Backend على http://127.0.0.1:8787
+   شغل backend بـ:
+   npm install
+   npm start
+
+6) بالإنتاج:
+   موقع الأدمن يتصل تلقائيًا بـ https://mawaseel-backend.onrender.com
+
+الحذف النهائي:
+- يظهر فقط للحساب الأساسي PRIMARY.
+- يحذف الأدمن من Firebase Authentication وFirestore.
+- لا يمكن حذف الحساب الأساسي نفسه.
