@@ -7,21 +7,14 @@ service cloud.firestore {
       return signedIn() && userDoc().data.get('active', true) != false &&
         (userDoc().data.get('role', '') == 'admin' || userDoc().data.get('isAdmin', false) == true);
     }
-    function isPrimaryAdmin() {
-      return isAdmin() && request.auth.token.email == 'mw.gl3tvl71en6c@mawaseel.ps';
-    }
-    function hasPermission(name) {
-      return isPrimaryAdmin() || (isAdmin() && userDoc().data.get('permissions', {}).get(name, false) == true);
-    }
-    function partnerDoc(uid) { return get(/databases/$(database)/documents/users/$(uid)); }
+    function isPrimaryAdmin() { return isAdmin() && request.auth.token.email == 'mw.gl3tvl71en6c@mawaseel.ps'; }
+    function hasPermission(name) { return isPrimaryAdmin() || (isAdmin() && userDoc().data.get('permissions', {}).get(name, false) == true); }
 
     match /users/{userId} {
       allow read: if signedIn() && (request.auth.uid == userId || isAdmin());
       allow create: if signedIn() && request.auth.uid == userId
         && request.resource.data.get('role', 'partner') == 'partner'
         && request.resource.data.get('isAdmin', false) == false;
-
-      // المستخدم يعدل بياناته العادية، لكن لا يقدر يوثق/يعتمد نفسه أو يغيّر مراحل الانضمام.
       allow update: if signedIn() && request.auth.uid == userId
         && request.resource.data.get('role', 'partner') == resource.data.get('role', 'partner')
         && request.resource.data.get('isAdmin', false) == resource.data.get('isAdmin', false)
@@ -31,9 +24,7 @@ service cloud.firestore {
         && request.resource.data.get('trialStartedAt', null) == resource.data.get('trialStartedAt', null)
         && request.resource.data.get('trialEndsAt', null) == resource.data.get('trialEndsAt', null)
         && request.resource.data.get('marketerApprovedAt', null) == resource.data.get('marketerApprovedAt', null);
-
-      allow update: if hasPermission('manageAdmins')
-        && (isPrimaryAdmin() || resource.data.get('isPrimaryAdmin', false) != true);
+      allow update: if hasPermission('manageAdmins') && (isPrimaryAdmin() || resource.data.get('isPrimaryAdmin', false) != true);
       allow delete: if isPrimaryAdmin() && resource.data.get('isPrimaryAdmin', false) != true;
     }
 
@@ -45,16 +36,18 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // الرقم الحقيقي محفوظ هنا فقط، والمسوق لا يستطيع قراءة هذه المجموعة إطلاقًا.
+    match /customers/{customerId} {
+      allow read: if isAdmin();
+      allow write: if false; // كل الكتابات الحساسة تتم من Backend عبر Firebase Admin SDK.
+    }
+
     match /orders/{orderId} {
       allow read: if signedIn() && (isAdmin() || resource.data.partnerId == request.auth.uid);
-      allow create: if hasPermission('ordersCreate')
-        && partnerDoc(request.resource.data.partnerId).data.get('verificationStatus', '') == 'approved'
-        && (partnerDoc(request.resource.data.partnerId).data.get('marketerStatus', '') == 'approved'
-            || request.resource.data.get('partnerCommission', 0) == 0);
+      allow create: if false; // الإنشاء عبر Backend حتى لا يمكن تزوير النسبة/العمولة أو ملكية الزبون.
       allow update: if hasPermission('ordersEdit')
-        && (partnerDoc(request.resource.data.partnerId).data.get('marketerStatus', '') == 'approved'
-            || request.resource.data.get('partnerCommission', 0) == 0);
-      allow delete: if hasPermission('ordersDelete');
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','statusHistory','updatedAt','lastEditedBy','notes']);
+      allow delete: if false; // الحذف عبر Backend.
     }
 
     match /{document=**} { allow read, write: if false; }
