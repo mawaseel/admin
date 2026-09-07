@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+# كل صفحات الإدارة تحمل meta robots=noindex داخل HTML.
