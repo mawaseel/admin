@@ -1,5 +1,5 @@
 MAWASEEL ADMIN
-Domain: https://admin.mawaseel.ps
+Domain: https://admin.mawaseel.com
 
 Separate administration site connected to the same Firebase project.
 Admins can add orders, choose the partner, update order status, and manage the order flow.

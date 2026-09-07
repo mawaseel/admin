@@ -24,7 +24,7 @@
    - ارفع Backend V4 إلى مستودع Render وانتظر نجاح Deploy.
    - Firebase > Firestore Database > Rules: استبدل القواعد بالملف firestore.rules في هذه الحزمة واضغط Publish.
    - في Render تأكد أن ALLOWED_ORIGINS يحتوي على:
-     https://mawaseel.github.io
+     https://mawaseel.com
      وأي دومينات مخصصة لاحقاً.
 
 5) الطلبات القديمة:

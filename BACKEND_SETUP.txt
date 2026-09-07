@@ -8,7 +8,7 @@ MAWASEEL ADMIN BACKEND - إعداد سريع
 
 2) Backend:
    ارفع مجلد backend على Render / Railway / Cloud Run.
-   الدومين المقترح: api.mawaseel.ps
+   الدومين المقترح: api.mawaseel.com
 
 3) Service Account:
    من Firebase/Google Cloud > Project Settings > Service Accounts
@@ -20,7 +20,7 @@ MAWASEEL ADMIN BACKEND - إعداد سريع
 
 4) متغيرات البيئة:
    PRIMARY_ADMIN_EMAIL=mw.gl3tvl71en6c@mawaseel.ps
-   ALLOWED_ORIGINS=https://admin.mawaseel.ps
+   ALLOWED_ORIGINS=https://admin.mawaseel.com
 
 5) محليًا:
    موقع الأدمن يتوقع Backend على http://127.0.0.1:8787
